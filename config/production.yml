@@ -1,0 +1,4 @@
+db:
+  url: 'mongodb://mongo/ems',
+  synchronize: false
+
