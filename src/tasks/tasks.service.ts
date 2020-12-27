@@ -10,7 +10,6 @@ import { TaskRepository } from './task.repository';
 import { v4 as uuid } from 'uuid';
 import { TaskStatus } from './task-status.enum';
 import { UpdateTaskDto } from './dto/update-task.dto';
-import { stat } from 'fs';
 
 @Injectable()
 export class TasksService {
