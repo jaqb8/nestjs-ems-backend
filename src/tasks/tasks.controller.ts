@@ -1,12 +1,18 @@
 import {
   Body,
   Controller,
+  Delete,
+  Get,
   Logger,
+  Param,
+  ParseUUIDPipe,
+  Patch,
   Post,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 import { CreateTaskDto } from './dto/create-task.dto';
+import { UpdateTaskDto } from './dto/update-task.dto';
 import { Task } from './task.entity';
 import { TasksService } from './tasks.service';
 
@@ -23,5 +29,30 @@ export class TasksController {
       `Creating a new task. Data: ${JSON.stringify(createTaskDto)}`,
     );
     return this.tasksService.createTask(createTaskDto);
+  }
+
+  @Get()
+  getAllTasks(): Promise<Task[]> {
+    return this.tasksService.getAllTasks();
+  }
+
+  @Get('/:id')
+  getTaskById(@Param('id', ParseUUIDPipe) id: string): Promise<Task> {
+    return this.tasksService.getTaskById(id);
+  }
+
+  @Delete('/:id')
+  deleteTask(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
+    this.logger.verbose(`Deleting task with ID "${id}"...`);
+    return this.tasksService.deleteTask(id);
+  }
+
+  @Patch('/:id')
+  @UsePipes(ValidationPipe)
+  updateTask(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateTaskDto: UpdateTaskDto,
+  ): Promise<Task> {
+    return this.tasksService.updateTask(id, updateTaskDto);
   }
 }
