@@ -44,7 +44,7 @@ export class TasksController {
 
   @Delete('/:id')
   deleteTask(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
-    this.logger.verbose(`Deleting task with ID "${id}"...`);
+    this.logger.verbose(`Deleting task with ID "${id}".`);
     return this.tasksService.deleteTask(id);
   }
 
@@ -54,6 +54,9 @@ export class TasksController {
     @Param('id', ParseUUIDPipe) id: string,
     @Body(new UpdateTaskValidationPipe()) updateTaskDto: UpdateTaskDto,
   ): Promise<Task> {
+    this.logger.verbose(
+      `Updating task with ID "${id}". Data: ${JSON.stringify(updateTaskDto)}`,
+    );
     return this.tasksService.updateTask(id, updateTaskDto);
   }
 }
