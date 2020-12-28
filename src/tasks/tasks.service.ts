@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { Task } from './task.entity';
@@ -50,12 +46,6 @@ export class TasksService {
   }
 
   async updateTask(id: string, updateTaskDto: UpdateTaskDto): Promise<Task> {
-    let { title, description, duration, status } = updateTaskDto;
-
-    if (!title && !description && !duration && !status) {
-      throw new BadRequestException('Update data not provided.');
-    }
-
     const task = await this.getTaskById(id);
     return await this.taskRepository.save({
       ...task,

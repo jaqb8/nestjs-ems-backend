@@ -1,5 +1,4 @@
-import { IsNumberString, IsOptional, Validate } from 'class-validator';
-import { TaskStatusConstraint } from '../validation/task-status-validation.constraint';
+import { IsEnum, IsNumberString, IsOptional, Validate } from 'class-validator';
 import { TaskStatus } from '../task-status.enum';
 
 export class UpdateTaskDto {
@@ -11,7 +10,5 @@ export class UpdateTaskDto {
   @IsNumberString()
   duration: string;
 
-  @IsOptional()
-  @Validate(TaskStatusConstraint)
   status: TaskStatus;
 }
