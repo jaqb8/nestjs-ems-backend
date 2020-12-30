@@ -61,7 +61,7 @@ export class LeaveRepository extends Repository<Leave> {
 
   private async isNewLeaveValid(newLeaveRange: [string, string]) {
     const overlapingRanges = await this.getOverlapingLeaves(newLeaveRange);
-    return overlapingRanges.length > 0;
+    return overlapingRanges.length === 0;
   }
 
   private async getOverlapingLeaves(
