@@ -11,10 +11,12 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { CreateLeaveDto } from './dto/create-leave.dto';
+import { LeaveDatesDto } from './dto/leave-dates.dto';
+import { UpdateLeaveDatesDto } from './dto/update-leave-dates.dto';
 import { LeaveStatus } from './leave-status.enum';
 import { Leave } from './leave.entity';
 import { LeavesService } from './leaves.service';
+import { LeaveDatesValidationPipe } from './pipes/leave-dates-validation.pipe';
 import { LeaveStatusValidationPipe } from './pipes/leave-status-validation.pipe';
 
 @Controller('leaves')
@@ -29,30 +31,47 @@ export class LeavesController {
   }
 
   @Get('/:id')
-  getLeaveById(@Param('id', ParseUUIDPipe) id: String): Promise<Leave> {
+  getLeaveById(@Param('id', ParseUUIDPipe) id: string): Promise<Leave> {
     return this.leavesService.getLeaveById(id);
   }
 
   @Post()
   @UsePipes(ValidationPipe)
-  createLeave(@Body() createLeaveDto: CreateLeaveDto): Promise<Leave> {
+  createLeave(
+    @Body(new LeaveDatesValidationPipe()) leaveDatesDto: LeaveDatesDto,
+  ): Promise<Leave> {
     this.logger.verbose(
-      `Creating new leave. Data: ${JSON.stringify(createLeaveDto)}`,
+      `Creating new leave. Data: ${JSON.stringify(leaveDatesDto)}`,
     );
-    return this.leavesService.createLeave(createLeaveDto);
+    return this.leavesService.createLeave(leaveDatesDto);
   }
 
-  @Patch('/:id')
+  @Patch('/:id/status')
   updateLeaveStatus(
-    @Param('id', ParseUUIDPipe) id: String,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body('status', LeaveStatusValidationPipe) status: LeaveStatus,
   ): Promise<Leave> {
     this.logger.verbose(`Updating status of leave with id "${id}".`);
     return this.leavesService.updateLeaveStatus(id, status);
   }
 
+  // TODO - adjust LeaveDatesDto and LeaveDatesValidationPipe for this method
+  @Patch('/:id/dates')
+  @UsePipes(ValidationPipe)
+  updateLeaveDates(
+    @Param('id') id: string,
+    @Body() updateLeaveDatesDto: UpdateLeaveDatesDto,
+  ) {
+    this.logger.verbose(
+      `Updating dates of leave with id "${id}". Data: ${JSON.stringify(
+        updateLeaveDatesDto,
+      )}`,
+    );
+    return this.leavesService.updateLeaveDates(id, updateLeaveDatesDto);
+  }
+
   @Delete('/:id')
-  deleteLeave(@Param('id', ParseUUIDPipe) id: String): Promise<void> {
+  deleteLeave(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     this.logger.verbose(`Deleting leave with ID "${id}".`);
     return this.leavesService.deleteLeave(id);
   }

@@ -1,25 +1,29 @@
 import { BadRequestException, PipeTransform } from '@nestjs/common';
 import { LeaveStatus } from '../leave-status.enum';
 
-export class LeaveStatusValidationPipe implements PipeTransform {
+export class LeaveStatusValidationPipe implements PipeTransform<string> {
   private allowedStatuses = [
     LeaveStatus.PENDING_APPROVAL,
     LeaveStatus.APPROVED,
     LeaveStatus.REJECTED,
   ];
 
-  transform(value: any) {
-    value = value.toUpperCase();
-
-    if (!this.isStatusValid(value)) {
-      throw new BadRequestException(`"${value}" is an invalid status.`);
+  transform(status: string) {
+    if (status) {
+      status = status.toUpperCase();
     }
 
-    return value;
+    if (!this.isStatusValid(status)) {
+      throw new BadRequestException(
+        `"${status === undefined ? '' : status}" is an invalid status.`,
+      );
+    }
+
+    return status;
   }
 
-  private isStatusValid(status: any): boolean {
-    const idx = this.allowedStatuses.indexOf(status);
+  private isStatusValid(status: string): boolean {
+    const idx = this.allowedStatuses.indexOf(<LeaveStatus>status);
     return idx !== -1;
   }
 }

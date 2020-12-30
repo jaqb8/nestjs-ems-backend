@@ -4,16 +4,16 @@ import { LeaveStatus } from './leave-status.enum';
 @Entity()
 export class Leave {
   @ObjectIdColumn()
-  _id: String;
+  _id: string;
 
   @PrimaryColumn()
-  id: String;
+  id: string;
 
   @Column()
-  startDate: String;
+  startDate: string;
 
   @Column()
-  endDate: String;
+  endDate: string;
 
   @Column()
   status: LeaveStatus;

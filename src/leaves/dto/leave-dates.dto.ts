@@ -1,9 +1,9 @@
 import { IsDateString } from 'class-validator';
 
-export class CreateLeaveDto {
+export class LeaveDatesDto {
   @IsDateString()
-  startDate: String;
+  startDate: string;
 
   @IsDateString()
-  endDate: String;
+  endDate: string;
 }
