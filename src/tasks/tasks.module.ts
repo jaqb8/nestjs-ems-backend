@@ -1,5 +1,6 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthFirebaseMiddleware } from '../middleware/auth-firebase.middleware';
 import { TaskRepository } from './task.repository';
 import { TasksController } from './tasks.controller';
 import { TasksService } from './tasks.service';
@@ -9,4 +10,8 @@ import { TasksService } from './tasks.service';
   controllers: [TasksController],
   providers: [TasksService],
 })
-export class TasksModule {}
+export class TasksModule implements NestModule {
+  configure(userContext: MiddlewareConsumer) {
+    userContext.apply(AuthFirebaseMiddleware).forRoutes('tasks');
+  }
+}
