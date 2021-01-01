@@ -12,7 +12,6 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { LeaveDatesDto } from './dto/leave-dates.dto';
-import { UpdateLeaveDatesDto } from './dto/update-leave-dates.dto';
 import { LeaveStatus } from './leave-status.enum';
 import { Leave } from './leave.entity';
 import { LeavesService } from './leaves.service';
@@ -60,14 +59,14 @@ export class LeavesController {
   @UsePipes(ValidationPipe)
   updateLeaveDates(
     @Param('id') id: string,
-    @Body() updateLeaveDatesDto: UpdateLeaveDatesDto,
+    @Body(new LeaveDatesValidationPipe()) leaveDatesDto: LeaveDatesDto,
   ) {
     this.logger.verbose(
       `Updating dates of leave with id "${id}". Data: ${JSON.stringify(
-        updateLeaveDatesDto,
+        leaveDatesDto,
       )}`,
     );
-    return this.leavesService.updateLeaveDates(id, updateLeaveDatesDto);
+    return this.leavesService.updateLeaveDates(id, leaveDatesDto);
   }
 
   @Delete('/:id')

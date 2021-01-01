@@ -6,7 +6,6 @@ import { v4 as uuid } from 'uuid';
 import { LeaveDatesDto } from './dto/leave-dates.dto';
 import { LeaveStatus } from './leave-status.enum';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
-import { UpdateLeaveDatesDto } from './dto/update-leave-dates.dto';
 const moment = extendMoment(Moment);
 
 @EntityRepository(Leave)
@@ -16,7 +15,7 @@ export class LeaveRepository extends Repository<Leave> {
 
     const newLeaveRange: [string, string] = [startDate, endDate];
 
-    if (!this.isNewLeaveValid(newLeaveRange)) {
+    if (!(await this.isNewLeaveValid(newLeaveRange))) {
       throw new BadRequestException(
         'Requested date of leave overlaps with other one.',
       );
@@ -32,15 +31,15 @@ export class LeaveRepository extends Repository<Leave> {
     return await this.save(leave);
   }
 
-  async updateLeaveDates(id: string, updateLeaveDatesDto: UpdateLeaveDatesDto) {
-    const { startDate, endDate } = updateLeaveDatesDto;
+  async updateLeaveDates(id: string, leaveDatesDto: LeaveDatesDto) {
+    const { startDate, endDate } = leaveDatesDto;
     const leave = await this.getLeaveById(id);
-    if (startDate) leave.startDate;
-    if (endDate) leave.endDate;
+    leave.startDate = startDate;
+    leave.endDate = endDate;
 
     const newLeaveRange: [string, string] = [leave.startDate, leave.endDate];
 
-    if (!this.isNewLeaveValid(newLeaveRange)) {
+    if (!(await this.isNewLeaveValid(newLeaveRange, id))) {
       throw new BadRequestException(
         'Requested date of leave overlaps with other one.',
       );
@@ -59,15 +58,26 @@ export class LeaveRepository extends Repository<Leave> {
     return found;
   }
 
-  private async isNewLeaveValid(newLeaveRange: [string, string]) {
-    const overlapingRanges = await this.getOverlapingLeaves(newLeaveRange);
+  private async isNewLeaveValid(newLeaveRange: [string, string], id?: string) {
+    const overlapingRanges = await this.getOverlapingLeaves(newLeaveRange, id);
     return overlapingRanges.length === 0;
   }
 
   private async getOverlapingLeaves(
     newLeaveRange: [string, string],
+    id?: string,
   ): Promise<Leave[]> {
-    const allLeaves = await this.find();
+    const allLeaves = !id
+      ? await this.find()
+      : await this.find({
+          where: {
+            id: {
+              $not: {
+                $eq: id,
+              },
+            },
+          },
+        });
     const overlapingRanges = allLeaves.filter((leave) =>
       LeaveRepository.checkIfDatesOverlap(newLeaveRange, [
         leave.startDate,
