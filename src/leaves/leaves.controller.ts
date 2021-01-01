@@ -57,7 +57,7 @@ export class LeavesController {
   @Patch('/:id/dates')
   @UsePipes(ValidationPipe)
   updateLeaveDates(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body(new LeaveDatesValidationPipe()) leaveDatesDto: LeaveDatesDto,
   ) {
     this.logger.verbose(
