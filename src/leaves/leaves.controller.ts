@@ -54,7 +54,6 @@ export class LeavesController {
     return this.leavesService.updateLeaveStatus(id, status);
   }
 
-  // TODO - adjust LeaveDatesDto and LeaveDatesValidationPipe for this method
   @Patch('/:id/dates')
   @UsePipes(ValidationPipe)
   updateLeaveDates(
