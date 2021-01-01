@@ -4,19 +4,19 @@ import { TaskStatus } from './task-status.enum';
 @Entity()
 export class Task {
   @ObjectIdColumn()
-  _id: String;
+  _id: string;
 
   @PrimaryColumn()
-  id: String;
+  id: string;
 
   @Column()
-  title: String;
+  title: string;
 
   @Column()
-  description: String;
+  description: string;
 
   @Column()
-  duration: String;
+  duration: string;
 
   @Column()
   status: TaskStatus;
