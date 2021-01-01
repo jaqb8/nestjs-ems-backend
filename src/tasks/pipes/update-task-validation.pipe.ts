@@ -2,10 +2,10 @@ import { BadRequestException, PipeTransform } from '@nestjs/common';
 import { TaskStatus } from '../task-status.enum';
 
 interface UpdateTaskData {
-  title: String;
-  description: String;
-  duration: String;
-  status: String;
+  title: string;
+  description: string;
+  duration: string;
+  status: string;
 }
 
 export class UpdateTaskValidationPipe implements PipeTransform<UpdateTaskData> {
@@ -33,14 +33,14 @@ export class UpdateTaskValidationPipe implements PipeTransform<UpdateTaskData> {
     }
   }
 
-  private checkIfValidStatus(status: String): void {
+  private checkIfValidStatus(status: string): void {
     if (status && !this.isStatusInEnum(status)) {
       throw new BadRequestException(`"${status}" is an invalid status`);
     }
   }
 
-  private isStatusInEnum(status: any): boolean {
-    const idx = this.allowedStatuses.indexOf(status);
+  private isStatusInEnum(status: string): boolean {
+    const idx = this.allowedStatuses.indexOf(<TaskStatus>status);
     return idx !== -1;
   }
 }
