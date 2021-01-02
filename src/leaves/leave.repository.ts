@@ -5,18 +5,21 @@ import { extendMoment } from 'moment-range';
 import { v4 as uuid } from 'uuid';
 import { LeaveDatesDto } from './dto/leave-dates.dto';
 import { LeaveStatus } from './leave-status.enum';
-import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { ConflictException, NotFoundException } from '@nestjs/common';
 const moment = extendMoment(Moment);
 
 @EntityRepository(Leave)
 export class LeaveRepository extends Repository<Leave> {
-  async createLeave(leaveDatesDto: LeaveDatesDto): Promise<Leave> {
+  async createLeave(
+    leaveDatesDto: LeaveDatesDto,
+    userId: string,
+  ): Promise<Leave> {
     const { startDate, endDate } = leaveDatesDto;
 
     const newLeaveRange: [string, string] = [startDate, endDate];
 
     if (!(await this.isNewLeaveValid(newLeaveRange))) {
-      throw new BadRequestException(
+      throw new ConflictException(
         'Requested date of leave overlaps with other one.',
       );
     }
@@ -26,21 +29,31 @@ export class LeaveRepository extends Repository<Leave> {
       startDate,
       endDate,
       status: LeaveStatus.PENDING_APPROVAL,
+      userId,
     });
 
     return await this.save(leave);
   }
 
-  async updateLeaveDates(id: string, leaveDatesDto: LeaveDatesDto) {
+  async updateLeaveDates(
+    id: string,
+    leaveDatesDto: LeaveDatesDto,
+    userId: string,
+  ) {
     const { startDate, endDate } = leaveDatesDto;
-    const leave = await this.getLeaveById(id);
+    const leave = await this.getLeaveById(id, userId);
+
+    if (leave.startDate === startDate && leave.endDate === endDate) {
+      return leave;
+    }
+
     leave.startDate = startDate;
     leave.endDate = endDate;
 
     const newLeaveRange: [string, string] = [leave.startDate, leave.endDate];
 
     if (!(await this.isNewLeaveValid(newLeaveRange, id))) {
-      throw new BadRequestException(
+      throw new ConflictException(
         'Requested date of leave overlaps with other one.',
       );
     }
@@ -48,8 +61,8 @@ export class LeaveRepository extends Repository<Leave> {
     return this.save(leave);
   }
 
-  async getLeaveById(id: string): Promise<Leave> {
-    const found = await this.findOne({ id });
+  async getLeaveById(id: string, userId: string): Promise<Leave> {
+    const found = await this.findOne({ id, userId });
 
     if (!found) {
       throw new NotFoundException(`Leave with id "${id}" not found.`);

@@ -1,33 +1,28 @@
-import { Injectable, NestMiddleware } from '@nestjs/common';
-import { NextFunction } from 'express';
+import {
+  Injectable,
+  NestMiddleware,
+  UnauthorizedException,
+} from '@nestjs/common';
 import admin from 'firebase-admin';
 
 @Injectable()
 export class AuthFirebaseMiddleware implements NestMiddleware {
-  constructor() {
-    admin.initializeApp({
-      credential: admin.credential.applicationDefault(),
-      databaseURL: 'https://ems-employee-managment-system.firebaseio.com',
-    });
-  }
-
   async use(req: any, res: any, next: any) {
     const header = req.headers?.authorization;
-    if (
-      header !== 'Bearer null' &&
-      req.headers?.authorization.split('Bearer ')
-    ) {
-      const idToken = req.headers.authorization.split('Bearer ')[1];
+    if (header && header.split(' ')[0] === 'Bearer') {
+      const idToken = header.split('Bearer ')[1];
 
       try {
         const decodedToken = await admin.auth().verifyIdToken(idToken);
-        req['currentUser'] = decodedToken;
+        req.currentUser = decodedToken;
       } catch (error) {
-        console.log(error);
+        if (error.code === 'auth/argument-error') {
+          throw new UnauthorizedException('Invalid token.');
+        }
       }
+    } else {
+      req.currentUser = null;
     }
-
     next();
   }
 }
-// TODO - GetUser decorator
