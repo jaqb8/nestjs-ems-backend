@@ -17,4 +17,7 @@ export class Leave {
 
   @Column()
   status: LeaveStatus;
+
+  @Column()
+  userId: string;
 }
