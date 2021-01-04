@@ -6,6 +6,8 @@ services:
       - '3000:3000'
     depends_on:
       - mongo
+    environment:
+      - NODE_ENV=production
 
   mongo:
     image: mongo:3.6.21-xenial
