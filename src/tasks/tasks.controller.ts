@@ -27,7 +27,7 @@ export class TasksController {
 
   constructor(private tasksService: TasksService) {}
 
-  @Get('/helloworld')
+  @Get('/helloworldd')
   helloWorld() {
     return 'Hello World!';
   }
