@@ -1,8 +1,8 @@
 import { Column, Entity, ObjectIdColumn, PrimaryColumn } from 'typeorm';
-import { TaskStatus } from './task-status.enum';
+import { LeaveStatus } from './leave-status.enum';
 
 @Entity()
-export class Task {
+export class Leave {
   @ObjectIdColumn()
   _id: string;
 
@@ -10,16 +10,13 @@ export class Task {
   id: string;
 
   @Column()
-  title: string;
+  startDate: string;
 
   @Column()
-  description: string;
+  endDate: string;
 
   @Column()
-  duration: string;
-
-  @Column()
-  status: TaskStatus;
+  status: LeaveStatus;
 
   @Column()
   userId: string;

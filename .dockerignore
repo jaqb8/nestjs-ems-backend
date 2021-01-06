@@ -1,2 +1,4 @@
 dist
 node_modules
+serviceAccount.json
+*key.json

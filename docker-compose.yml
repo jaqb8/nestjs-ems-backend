@@ -1,18 +1,34 @@
 version: '3'
 services:
   api-server:
-    image: ems-backend-api
+    image: index.docker.io/jaqb8/ems-backend-api:0.2
     ports:
-      - '3000:3000'
+      - '8080:8080'
+    networks:
+      - ems-backend
     depends_on:
       - mongo
 
   mongo:
     image: mongo:3.6.21-xenial
+    environment:
+      - MONGODB_INITDB_DATABASE=ems
     ports:
       - '27017:27017'
     volumes:
       - mongo-data:/data/db
+    networks:
+      - ems-backend
+
+  watchtower:
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - $HOME/.docker/config.json:/config.json
+    command: --interval 30
 volumes:
   mongo-data:
     driver: local
+networks:
+  ems-backend:
+    driver: bridge

@@ -1,4 +1,6 @@
-db:
-  url: 'mongodb://mongo/ems',
-  synchronize: false
+server:
+  port: 8080
 
+db:
+  url: 'mongodb://mongo/ems'
+  synchronize: false
