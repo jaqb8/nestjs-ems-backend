@@ -9,7 +9,6 @@ import admin from 'firebase-admin';
 export class AuthFirebaseMiddleware implements NestMiddleware {
   async use(req: any, res: any, next: any) {
     const header = req.headers?.authorization;
-    console.log(header);
     if (header && header.split(' ')[0] === 'Bearer') {
       const idToken = header.split('Bearer ')[1];
 
@@ -17,7 +16,6 @@ export class AuthFirebaseMiddleware implements NestMiddleware {
         const decodedToken = await admin.auth().verifyIdToken(idToken);
         req.currentUser = decodedToken;
       } catch (error) {
-        console.log(error);
         if (error.code === 'auth/argument-error') {
           throw new UnauthorizedException('Invalid token.');
         }

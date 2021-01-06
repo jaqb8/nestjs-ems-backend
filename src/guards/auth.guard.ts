@@ -16,7 +16,6 @@ export class AuthGuard implements CanActivate {
   }
 
   private validateRequest(request: any): boolean {
-    console.log(request);
     if (!request.currentUser) {
       throw new UnauthorizedException(
         'You are not authorized to make this request.',

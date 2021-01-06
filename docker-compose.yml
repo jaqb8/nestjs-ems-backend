@@ -1,13 +1,17 @@
 version: '3'
 services:
   api-server:
-    image: index.docker.io/jaqb8/ems-backend-api:0.2
+    image: index.docker.io/jaqb8/ems-backend-api:latest
     ports:
       - '8080:8080'
     networks:
       - ems-backend
     depends_on:
       - mongo
+    environment:
+      GOOGLE_APPLICATION_CREDENTIALS: /tmp/keys/keyfile.json
+    volumes:
+      - ${GCP_KEY_PATH}:/tmp/keys/keyfile.json:ro
 
   mongo:
     image: mongo:3.6.21-xenial
