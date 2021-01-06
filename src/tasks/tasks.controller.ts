@@ -27,6 +27,11 @@ export class TasksController {
 
   constructor(private tasksService: TasksService) {}
 
+  @Get('/helloworld')
+  helloWorld() {
+    return 'Hello World';
+  }
+
   @Post()
   @UsePipes(ValidationPipe)
   createTask(
