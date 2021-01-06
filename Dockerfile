@@ -1,4 +1,4 @@
-FROM node
+FROM node:lts-alpine
 
 # Create app directory
 WORKDIR /usr/app
@@ -17,6 +17,7 @@ COPY . .
 
 RUN npm run build
 
+USER node
 
 EXPOSE 8080
 CMD ["npm", "run", "start:prod"]
