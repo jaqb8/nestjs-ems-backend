@@ -29,7 +29,7 @@ export class TasksController {
 
   @Get('/helloworld')
   helloWorld() {
-    return 'Hello World';
+    return 'Hello World!';
   }
 
   @Post()
