@@ -14,6 +14,10 @@ async function bootstrap() {
     databaseURL: 'https://ems-employee-managment-system.firebaseio.com',
   });
 
+  if (admin.apps.length > 0) {
+    logger.log('Firebase app initialized.');
+  }
+
   if (process.env.NODE_ENV === 'development') {
     app.enableCors();
   } else {
