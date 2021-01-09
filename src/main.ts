@@ -15,7 +15,7 @@ async function bootstrap() {
   });
 
   if (admin.apps.length > 0) {
-    logger.log('Firebase app initialized.');
+    logger.log('Firebase app successfully initialized.');
   }
 
   if (process.env.NODE_ENV === 'development') {
