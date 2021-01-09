@@ -14,15 +14,22 @@ services:
       - ${GCP_KEY_PATH}:/tmp/keys/keyfile.json:ro
 
   mongo:
+    user: $UID
     image: mongo:3.6.21-xenial
-    environment:
-      - MONGODB_INITDB_DATABASE=ems
     ports:
       - '27017:27017'
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_DATABASE: ems
+      MONGO_USERNAME: admin
+      MONGO_PASSWORD: example
     volumes:
-      - mongo-data:/data/db
+      - ./data:/data/db
+      - ./mongo-init.sh:/docker-entrypoint-initdb.d/mongo-init.sh:ro
     networks:
       - ems-backend
+    command: mongod --auth
 
   watchtower:
     image: containrrr/watchtower
@@ -30,9 +37,6 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - $HOME/.docker/config.json:/config.json
     command: --interval 30
-volumes:
-  mongo-data:
-    driver: local
 networks:
   ems-backend:
     driver: bridge

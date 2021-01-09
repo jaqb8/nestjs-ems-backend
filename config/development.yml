@@ -2,5 +2,5 @@ server:
   port: 3000
 
 db:
-  url: 'mongodb://localhost/ems'
+  url: 'mongodb://localhost:27017/ems'
   synchronize: true
