@@ -2,5 +2,5 @@ server:
   port: 8080
 
 db:
-  url: 'mongodb://mongo/ems'
+  url: 'mongo_connection_string'
   synchronize: false
