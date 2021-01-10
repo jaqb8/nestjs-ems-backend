@@ -1,5 +1,6 @@
 server:
   port: 8080
+  origin: 'https://ems-employee-managment-system.web.app'
 
 db:
   url: 'mongo_connection_string'
