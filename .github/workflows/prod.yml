@@ -1,9 +1,6 @@
 name: Build container for production & push to Dockerhub
 
 on:
-  pull_request:
-    branches:
-      - master
   push:
     branches:
       - master
