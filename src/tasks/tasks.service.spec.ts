@@ -4,6 +4,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
+import { TaskStatus } from './task-status.enum';
 import { Task } from './task.entity';
 import { TasksService } from './tasks.service';
 
@@ -109,19 +110,21 @@ describe('TasksService', () => {
   });
 
   describe('updateTask', () => {
-    it('updates a task title', async () => {
+    it("updates task's fields", async () => {
       taskRepository.save.mockReturnValue({
-        ...mockTask,
         title: 'Updated test title',
+        description: 'Updated description',
+        duration: 'Updated duration',
+        status: TaskStatus.DONE,
       });
       tasksService.getTaskById = jest.fn().mockResolvedValue(mockTask);
 
       expect(tasksService.getTaskById).not.toHaveBeenCalled();
       const updateTaskDto: UpdateTaskDto = {
         title: 'Updated test title',
-        description: undefined,
-        duration: undefined,
-        status: undefined,
+        description: 'Updated description',
+        duration: 'Updated duration',
+        status: TaskStatus.DONE,
       };
       const result = await tasksService.updateTask(
         'testTaskId',
@@ -134,8 +137,10 @@ describe('TasksService', () => {
       );
       expect(taskRepository.save).toHaveBeenCalled();
       expect(result).toEqual({
-        ...mockTask,
         title: 'Updated test title',
+        description: 'Updated description',
+        duration: 'Updated duration',
+        status: TaskStatus.DONE,
       });
     });
   });
