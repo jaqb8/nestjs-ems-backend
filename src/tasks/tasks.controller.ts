@@ -38,7 +38,7 @@ export class TasksController {
         createTaskDto,
       )}`,
     );
-    return this.tasksService.createTask(createTaskDto, userId);
+    return this.tasksService.createTask(createTaskDto, '1');
   }
 
   @Get()
