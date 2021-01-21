@@ -11,7 +11,7 @@ interface UpdateTaskData {
 export class UpdateTaskValidationPipe implements PipeTransform<UpdateTaskData> {
   private allowedStatuses = [
     TaskStatus.OPEN,
-    TaskStatus.IN_PROGRESS,
+    TaskStatus.IN_REVIEW,
     TaskStatus.DONE,
   ];
 
